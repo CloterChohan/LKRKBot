@@ -6,7 +6,7 @@
 
 3. Open CMD by using ``Windows + R`` then type ``cmd``
 
-4. Make sure to run the command ``node --v`` in CMD to make sure that your node js is installed
+4. Make sure to run the command ``node -v`` in CMD to make sure that your node js is installed
 
 5. Run this command ``cd [The location of cloned repo]`` in the CMD (without the '[]')
 
