@@ -16,8 +16,10 @@ Clone the repository first
     - ``npm install -g typescript``
 
 5. Create new file with name "auth.json" with this inside
-`{
+```json
+{
 	"token": ""
-}`
-Make sure to write the bot-token insie the "", example: ``"token": "0000000000000000000000000000000"``.
+}
+```
+Make sure to write the bot-token inside the "", example: ``"token": "0000000000000000000000000000000"``.
 To get the token, visit https://discord.com/developers and choose the bot you want to create, and then go to bot > copy token
