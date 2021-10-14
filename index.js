@@ -24,5 +24,25 @@ bot.on("message", function(message) {
     }
 });  
 
+bot.on("messageCreate", (msg) => {
+	// console.log(`>>> Message from ${msg.author.tag}: ${msg.content}`);
+	let content = msg.content;
+	const nyaAnswers = ["o(≧口≦)o", "(○｀ 3′○)", "o((>ω< ))o", "o(一︿一+)o", "(´･ω･`)?", "https://media.discordapp.net/attachments/765856977028907009/897407441048862730/Clotopus.png?width=102&height=102"];
+	checkContent = /^n+y+a/g;
+	let found = content.match(checkContent);
+	if(found){
+		printOutNya(msg, nyaAnswers);
+	}
+	return;
+});
+
+let printOutNya = (msg, nyaAnswers) => msg.reply(nyaAnswers[getRandomNum(nyaAnswers.length)]);
+
+let getRandomNum = (max) => {
+	min = Math.ceil(0);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
 
 bot.login(auth.token);
