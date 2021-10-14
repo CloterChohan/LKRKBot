@@ -1,25 +1,37 @@
+//Discord.js
 const auth = require('./auth.json');
-const { Client, Intents } = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
+
+//Trello
 const Trello = require("node-trello");
 const t = new Trello(auth.trello_key, auth.trello_token);
- 
+
+//SlashCommands
+const fs = require('fs');
+const { Collection } = require('discord.js');
+const { token } = require('./auth.json');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const deployCommand = require('./deploy-command.js');
+//SlashCommands - Registering
+client.commands = new Collection();
+const commandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./slashCommands/${file}`);
+    client.commands.set(command.data.name, command);
+}
 
 
+//Initiation
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 bot.on('ready', async() => {
     console.log(`Connected`);
     console.log(`Logged in as: `);
     console.log(`${bot.user.tag}`);
+    deployCommand();
 });
-let boardId = "6128f207793a0452b3d86683";
-t.get(boardId, {cards: "open"}, function(err, data) {
-    if (err) throw err;
-    console.log(data);
-  });
 
-//command
 let prefix = '!';
 
 bot.on("messageCreate", (message) => { 
@@ -39,7 +51,7 @@ bot.on("messageCreate", (message) => {
     		message.channel.send(JSON.stringify(data.cards[1]));
     	});
     }
-    if(command === "datapenjualan"){
+    if(command === "idea"){
         const exampleEmbed = new MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Data Penjualan')
@@ -58,6 +70,18 @@ bot.on("messageCreate", (message) => {
     }
 
 });  
+
+bot.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+	const command = client.commands.get(interaction.commandName);
+	if (!command) return;
+	try {
+		await command.execute(interaction, bot);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
+});
 
 bot.on("messageCreate", (msg) => {
 	// console.log(`>>> Message from ${msg.author.tag}: ${msg.content}`);
