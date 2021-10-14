@@ -22,7 +22,7 @@ t.get(boardId, {cards: "open"}, function(err, data) {
 //command
 let prefix = '!';
 
-bot.on("message", function(message) { 
+bot.on("messageCreate", (message) => { 
     if (message.author.bot) return;
     if (!message.content.startsWith(prefix)) return;                             
     const commandBody = message.content.slice(prefix.length);
@@ -34,8 +34,10 @@ bot.on("message", function(message) {
         message.reply(`FUCK YOU BITCH This message had a latency of ${timeTaken}ms.`);
     }
     if(command === "trellodata"){
-          // URL arguments are passed in as an object.
-
+    	t.get("1/members/me", {cards: "open"}, (err, data) =>{
+    		if(err) throw err;
+    		message.channel.send(JSON.stringify(data.cards[1]));
+    	});
     }
     if(command === "datapenjualan"){
         const exampleEmbed = new MessageEmbed()
