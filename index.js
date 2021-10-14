@@ -1,5 +1,10 @@
 const auth = require('./auth.json');
 const { Client, Intents } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
+const Trello = require("node-trello");
+const t = new Trello(auth.trello_key, auth.trello_token);
+ 
+
 
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -8,6 +13,12 @@ bot.on('ready', async() => {
     console.log(`Logged in as: `);
     console.log(`${bot.user.tag}`);
 });
+let boardId = "6128f207793a0452b3d86683";
+t.get(boardId, {cards: "open"}, function(err, data) {
+    if (err) throw err;
+    console.log(data);
+  });
+
 //command
 let prefix = '!';
 
@@ -17,11 +28,33 @@ bot.on("message", function(message) {
     const commandBody = message.content.slice(prefix.length);
     const args = commandBody.split(' ');
     const command = args.shift().toLowerCase();
-
+    
     if(command === "servetea"){
         const timeTaken = Date.now() - message.createdTimestamp;
         message.reply(`FUCK YOU BITCH This message had a latency of ${timeTaken}ms.`);
     }
+    if(command === "trellodata"){
+          // URL arguments are passed in as an object.
+
+    }
+    if(command === "datapenjualan"){
+        const exampleEmbed = new MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Data Penjualan')
+            .setDescription('Hasil Data Penjualan')
+            .addFields(
+                { name: '\u200B', value: '\u200B' },
+                { name: 'Nama:', value: 'Christopher Vincent Welax\nFelix Triprasetya Cakti', inline: true },
+                { name: 'Email:', value: 'VincentWelax@gmail.com\nFelixTri@gmail.com', inline: true },
+                { name: 'Jenis Service:', value: 'Nasi Goreng Ayam Penyet\nEs Krim Susu Sapi Nasional', inline: true },
+            )
+            .addField('Harga', 'Rp56.000\nRp12.000', true)
+            .addField('Total Harga', 'Rp68.000', true)
+            .setTimestamp()
+        console.log("run!");
+        message.channel.send({ embeds: [exampleEmbed]});
+    }
+
 });  
 
 bot.on("messageCreate", (msg) => {
