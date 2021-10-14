@@ -4,10 +4,10 @@ Before adding new command, run this command in CMD:
 To add more, just create a new file with command you want.
 
 For example: /music,
-then add file 'music.js' in commands folder.
+then add file `'music.js`' in commands folder.
 When called it will run anything inside the execute function.
 
-example code (you can copy paste this): 
+example file code (you can copy paste this): in ``music.js``
 ```js
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Client, Intents, MessageEmbed } = require('discord.js');
