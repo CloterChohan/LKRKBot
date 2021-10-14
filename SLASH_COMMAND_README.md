@@ -23,7 +23,7 @@ module.exports = {
 //Execute when the command being called
 	async execute(interaction) {   
 		let output = interaction.options.getString('add', true);
-    //code here
+    		//code here
 	}
 };
 ```
