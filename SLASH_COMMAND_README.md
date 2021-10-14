@@ -25,6 +25,7 @@ module.exports = {
 		let output = interaction.options.getString('add', true);
     //code here
 	}
-};```
+};
+```
 
 for more guide visit https://discordjs.guide/interactions/registering-slash-commands.html#guild-commands
