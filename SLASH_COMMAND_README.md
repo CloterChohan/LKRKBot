@@ -29,3 +29,4 @@ module.exports = {
 ```
 
 for more guide visit https://discordjs.guide/interactions/registering-slash-commands.html#guild-commands
+and that's it! just run the ``node index.js`` and your command is ready!
