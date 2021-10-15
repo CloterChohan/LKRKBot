@@ -8,6 +8,7 @@ module.exports = {
 	.setDescription('Serving you a cup of tea')
     .addSubcommand(subCommand => subCommand.setName('black_tea').setDescription('Serve you a Black Tea'))
     .addSubcommand(subCommand => subCommand.setName('green_tea').setDescription('Serve you a Green Tea')),
+    
 	async execute(interaction, bot) {
         const blackTea = jsonFile.black_tea;
         const greenTea = jsonFile.green_tea;
