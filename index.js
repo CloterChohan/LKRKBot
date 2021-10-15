@@ -29,6 +29,9 @@ bot.on('ready', async() => {
     console.log(`Connected`);
     console.log(`Logged in as: `);
     console.log(`${bot.user.tag}`);
+    bot.user.setStatus('idle');
+    bot.user.setUsername("LKRK's Helper || use /help");
+    bot.user.setActivity("with my master UwU", {type: "COMPETING"});
     deployCommand();
 });
 
