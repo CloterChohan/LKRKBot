@@ -16,6 +16,9 @@ const deployCommand = require('./deploy-command.js');
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
 
+//Scheduler
+const cron = require('node-cron');
+
 for (const file of commandFiles) {
 	const command = require(`./slashCommands/${file}`);
     client.commands.set(command.data.name, command);
@@ -33,6 +36,16 @@ bot.on('ready', async() => {
     bot.user.setUsername("LKRK's Helper || use /help");
     bot.user.setActivity("with my master UwU", {type: "COMPETING"});
     deployCommand();
+    let data = JSON.parse(fs.readFileSync('./data.json'));
+    for(let i = 0 ; i < data.schedule.date.length; i++){
+        let task = cron.schedule(`${data.schedule.minute[i]} ${data.schedule.hour[i]} ${data.schedule.date[i]} ${data.schedule.month[i]} ${data.schedule.day[i]}`, () =>  {
+            bot.channels.cache.get("880814120688054312").send(`@${data.schedule.roleId[i].name}, ` + data.schedule.text[i]);
+            }, {
+            scheduled: true,
+            timezone: "Asia/Jakarta"
+            });
+        task.start();
+    }
 });
 
 let prefix = '!';

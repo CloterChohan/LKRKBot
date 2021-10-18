@@ -81,17 +81,14 @@ module.exports = {
 					break;
 			}
             interaction.reply(`Will remind you in ${returntimetext}${timemeasure}`);
-            await wait(returntime - 100);
-            await interaction.deleteReply();
             
 			// Returns the Message
 			setTimeout(function () {
 				// Creates the message
 				let content = interaction.options.getString('text');
-                const channel = client.channels.cache.get('880814120688054312');
                 console.log(userid);
                 console.log(content); //Pwease Fuck me now daddy @ニャー#9342 UwU
-                channel.send(`<@${userid}>, ${content}`);
+                bot.channels.cache.get("880814120688054312").send(`<@${userid}>, ` + content);
 				console.log('Message sent to ' + userid + ' at ' + Date.now().toString());
 			}, returntime)
 		} catch (e) {
