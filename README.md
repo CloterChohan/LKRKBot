@@ -18,6 +18,7 @@
     - ``npm install node-trello``
     - ``npm i google-spreadsheet --save``
     - ``npm install -g typescript``
+    - ``npm install node-schedule``
 
 8. Create new file with name "auth.json" with this inside
 ```json
