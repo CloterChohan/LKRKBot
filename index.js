@@ -2,10 +2,6 @@
 const auth = require('./auth.json');
 const { Client, Intents, MessageEmbed } = require('discord.js');
 
-//Trello
-const Trello = require("node-trello");
-const t = new Trello(auth.trello_key, auth.trello_token);
-
 //SlashCommands
 const fs = require('fs');
 const { Collection } = require('discord.js');
@@ -60,12 +56,6 @@ bot.on("messageCreate", (message) => {
     if(command === "servetea"){
         const timeTaken = Date.now() - message.createdTimestamp;
         message.reply(`FUCK YOU BITCH This message had a latency of ${timeTaken}ms.`);
-    }
-    if(command === "trellodata"){
-    	t.get("1/members/me", {cards: "open"}, (err, data) =>{
-    		if(err) throw err;
-    		message.channel.send(JSON.stringify(data.cards[1]));
-    	});
     }
     if(command === "idea"){
         const exampleEmbed = new MessageEmbed()

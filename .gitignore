@@ -1,3 +1,5 @@
 *.csv
 /auth.json
 node_modules/
+runLKRKBot.bat
+runLKRKBot.vbs
