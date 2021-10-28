@@ -4,107 +4,159 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 const wait = require('util').promisify(setTimeout);
 const jsonFile = require('../data.json');
 const fs = require('fs');
-const cron = require('node-cron');
+const schedule = require('node-schedule');
+const auth = require('../auth.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('scheduler')
-	.setDescription('DD/MM/TT:TT')
-    .addSubcommand(subcommand => subcommand.setName('list').setDescription('Info about a user'))
-    .addSubcommand(subcommand => subcommand.setName('add').setDescription('Create a new schedule')
-    .addRoleOption(options => options.setName('role').setDescription('Who do i need to remind? Role Wise').setRequired(true))
-    .addStringOption(options => options.setName('text').setDescription('Text to Remind you of').setRequired(true))
-    .addStringOption(options => options.setName('date').setDescription('Every what date? 1 - 31').setRequired(false))
-    .addStringOption(options => options.setName('day').setDescription('Every what day? 0 = Sunday, 6 = Saturday').setRequired(false))
-    .addStringOption(options => options.setName('month').setDescription('Every what month? 1 - 12').setRequired(false))
-    .addStringOption(options => options.setName('hour').setDescription('Every what hour? [**HH**:MM] 0 - 23').setRequired(false))
-    .addStringOption(options => options.setName('minute').setDescription('Every what minute? [HH:**MM**] 0 - 59').setRequired(false)))
-    .addSubcommand(subcommand => subcommand.setName('delete').setDescription('Remove a schedule')
-    .addStringOption(options => options.setName('number').setDescription('Which number in the list?').setRequired(true))),
+    .setName('schedule')
+	.setDescription('Give yourself a reminder for every x day, month, or weeks')
 
+    //Personal
+        .addSubcommand(
+            subcommand => subcommand.setName('list').setDescription('Info about a user Schedule')
+        )
+        .addSubcommand(
+            subcommand => subcommand.setName('add').setDescription('Create a new schedule')
+            .addStringOption(options => options.setName('text').setDescription('Text to Remind you of').setRequired(true))
+            .addRoleOption(options => options.setName('role').setDescription('Who to ping?').setRequired(true))
+            .addStringOption(options => options.setName('date').setDescription('Every what date? 1 - 31').setRequired(false))
+            .addStringOption(options => options.setName('day').setDescription('Every what day? 0 = Sunday, 6 = Saturday').setRequired(false))
+            .addStringOption(options => options.setName('month').setDescription('Every what month? 1 - 12').setRequired(false))
+            .addStringOption(options => options.setName('hour').setDescription('Every what hour? [**HH**:MM] 0 - 23').setRequired(false))
+            .addStringOption(options => options.setName('minute').setDescription('Every what minute? [HH:**MM**] 0 - 59').setRequired(false))
+        )
+        .addSubcommand(
+            subcommand => subcommand.setName('delete').setDescription('Remove a schedule')
+            .addStringOption(options => options.setName('number').setDescription('Which number in the list?').setRequired(true))
+        )
+        .addSubcommand(subcommand => subcommand.setName('deleteall').setDescription('Delete all schedule')),
     async execute(interaction, bot) {
         let data = JSON.parse(fs.readFileSync('./data.json'));
-        if(interaction.options.getSubcommand() === 'list'){
-            const embed = new MessageEmbed().setColor('#0099ff').setTitle('The list of schedules');
-            for(let i = 0; i < data.schedule.date.length; i++){
-                let date = data.schedule.date[i] == "*" ? "*": zeroBase(data.schedule.date[i]);
-                let day = data.schedule.day[i] == "*" ? "*": convertDay(data.schedule.day[i]);
-                let month = data.schedule.month[i] == "*" ? "*": convertMonth(data.schedule.month[i]);
-                let hour = data.schedule.hour[i] == "*" ? "*": zeroBase(data.schedule.hour[i]);
-                let minute = data.schedule.minute[i] == "*" ? "*": zeroBase(data.schedule.minute[i]);
-                let role = data.schedule.roleId[i];
-                let text = data.schedule.text[i];
-                embed.addFields(
-                    { name: `List Number#${i+1}`, value: `Role:  ${role.name}\nDate:  ${month}, ${date}\nEvery:  ${day}\nOn:  ${hour}:${minute} WIB\nText: ${text}` },
-                )
+        let input = interaction.options.getSubcommand();
+        let jsonDatas = data.schedule;
+        let embed = new MessageEmbed().setColor('#0099ff').setTitle('The list of schedules');
+        let task;
+        //Printout the list
+        if(input === 'list'){
+            if(jsonDatas.index.length === 0){
+                console.log("Run!");
+                embed.setTitle("No Data yet!");
+                await interaction.reply({embeds: [embed]});
             }
-            await interaction.reply({embeds: [embed]});
+            else{
+                searchList(jsonDatas, embed, interaction);
+            }
         }
-        else if(interaction.options.getSubcommand() === 'add'){
+        //Add new personal list 
+        if(input === 'add'){
             let currDate = interaction.options.getString('date') ?? '*';
             let currDay = interaction.options.getString('day') ?? '*';
             let currMonth = interaction.options.getString('month') ?? '*';
             let currHour = interaction.options.getString('hour') ?? '*';
             let currMinute = interaction.options.getString('minute') ?? '*';
             let currText = interaction.options.getString('text');
-            let currRole = interaction.options.getRole('role');
+            let currRole = interaction.options.getRole('role').id;
             if(!inputAligibility(parseInt(currDate), parseInt(currDay), parseInt(currMonth), parseInt(currHour), parseInt(currMinute))){
                 interaction.reply('Error! please put a corrent number! Read the Description for formatting');
             }
             else{
-                data.schedule.text.push(currText);
-                data.schedule.roleId.push(currRole);
-                data.schedule.date.push(currDate);
-                data.schedule.day.push(currDay);
-                data.schedule.month.push(currMonth);
-                data.schedule.hour.push(currHour);
-                data.schedule.minute.push(currMinute);
-        
-                fs.writeFileSync('./data.json', JSON.stringify(data), "utf-8");
-        
-                let task = cron.schedule(`${currMinute} ${currHour} ${currDate} ${currMonth} ${currDay}`, () =>  {
-                    bot.channels.cache.get("880814120688054312").send(`${currRole}, ` + data.schedule.text);
-                }, {
-                scheduled: true,
-                timezone: "Asia/Jakarta"
+                pushData(jsonDatas, currDate, currDay, currMonth, currHour, currMinute, currText, currRole);
+                fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), "utf-8");
+                let uniqueIndex = jsonDatas.index[jsonDatas.index.length - 1];
+                task = schedule.scheduleJob(uniqueIndex, `${currMinute} ${currHour} ${currDate} ${currMonth} ${currDay}`, function(){
+                    bot.channels.cache.get("880814120688054312").send(`Hey! <@&${currRole}> `+ currText);
                 });
-                task.start();
-                interaction.reply("Ok!");
+                interaction.reply("Done!");
                 await wait(2000);
                 await interaction.deleteReply();
             }
         }
-        else if(interaction.options.getSubcommand() === 'delete'){
+        //Delete specific schedule
+        if(input === 'delete'){
             let option = interaction.options.getString('number') - 1;
-            data.schedule.text[option] = null;
-            data.schedule.roleId[option] = null;
-            data.schedule.date[option] = null;
-            data.schedule.day[option] = null;
-            data.schedule.month[option] = null;
-            data.schedule.hour[option] = null;
-            data.schedule.minute[option] = null;
-            for(let i = option ; i < data.schedule.date.length; i++){
-                data.schedule.text[i] = data.schedule.text[i+1];
-                data.schedule.roleId[i] = data.schedule.roleId[i+1];
-                data.schedule.date[i] = data.schedule.date[i+1];
-                data.schedule.day[i] = data.schedule.day[i+1];
-                data.schedule.month[i] = data.schedule.month[i+1];
-                data.schedule.hour[i] = data.schedule.hour[i+1];
-                data.schedule.minute[i] = data.schedule.minute[i+1];
-            }
-            data.schedule.text.pop();
-            data.schedule.roleId.pop();
-            data.schedule.date.pop();
-            data.schedule.day.pop();
-            data.schedule.month.pop();
-            data.schedule.hour.pop();
-            data.schedule.minute.pop();
-            fs.writeFileSync('./data.json', JSON.stringify(data), "utf-8");
+            let current_job = schedule.scheduledJobs[jsonDatas.index[option]];
+            current_job.cancel();
+            executeDelete(option, jsonDatas);
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), "utf-8");
             option++;
             interaction.reply(`List Number ${option} Deleted!`);
         }
+        //Delete all personal Data
+        if(input === 'deleteall'){
+            for(let i = jsonDatas.index.length - 1; i >=0 ; i--){
+                let current_job = schedule.scheduledJobs[jsonDatas.index[i]];
+                current_job.cancel();
+                executeDelete(i, jsonDatas);
+            }
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), "utf-8");
+            interaction.reply(`All of your schedule has been Deleted!`);
+            await wait(10000);
+            await interaction.deleteReply();
+        }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////METHODS///////////////////////////////////////////
+
+let searchList = async (jsonDatas, embed, interaction) => {
+    for(let i = 0; i < jsonDatas.date.length; i++){
+        let date = jsonDatas.date[i] == "*" ? "*": zeroBase(jsonDatas.date[i]);
+        let day = jsonDatas.day[i] == "*" ? "*": convertDay(jsonDatas.day[i]);
+        let month = jsonDatas.month[i] == "*" ? "*": convertMonth(jsonDatas.month[i]);
+        let hour = jsonDatas.hour[i] == "*" ? "*": zeroBase(jsonDatas.hour[i]);
+        let minute = jsonDatas.minute[i] == "*" ? "*": zeroBase(jsonDatas.minute[i]);
+        let role = jsonDatas.roleId[i];
+        let text = jsonDatas.text[i];
+        embed.addFields(
+            { name: `List Number#${i+1}`, value: `Role:  ${role}\nDate:  ${month}, ${date}\nEvery:  ${day}\nOn:  ${hour}:${minute} WIB\nText: ${text}` },
+        )
+    }
+    await interaction.reply({embeds: [embed]});
+}
+
+let pushData = (jsonDatas, currDate, currDay, currMonth, currHour, currMinute, currText, roleId) => {
+    let newIndex;
+    if(jsonDatas.text.length === 0){
+        jsonDatas.index.push("Index " + JSON.stringify(0));
+    }
+    else{
+        newIndex = jsonDatas.index[jsonDatas.text.length - 1].split(" ");
+        jsonDatas.index.push("Index " + JSON.stringify(parseInt(newIndex[1]) + 1));
+    }
+
+    jsonDatas.text.push(currText);
+    jsonDatas.date.push(currDate);
+    jsonDatas.day.push(currDay);
+    jsonDatas.month.push(currMonth);
+    jsonDatas.hour.push(currHour);
+    jsonDatas.minute.push(currMinute);
+    jsonDatas.roleId.push(roleId);
+}
+
+let executeDelete = (option, jsonDatas) => {
+    for(let i = option ; i < jsonDatas.index.length; i++){
+        jsonDatas.index[i] = jsonDatas.index[i+1];
+        jsonDatas.text[i] = jsonDatas.text[i+1];
+        jsonDatas.roleId[i] = jsonDatas.roleId[i+1];
+        jsonDatas.date[i] = jsonDatas.date[i+1];
+        jsonDatas.day[i] = jsonDatas.day[i+1];
+        jsonDatas.month[i] = jsonDatas.month[i+1];
+        jsonDatas.hour[i] = jsonDatas.hour[i+1];
+        jsonDatas.minute[i] = jsonDatas.minute[i+1];
+    }
+    jsonDatas.index.pop();
+    jsonDatas.text.pop();
+    jsonDatas.roleId.pop();
+    jsonDatas.date.pop();
+    jsonDatas.day.pop();
+    jsonDatas.month.pop();
+    jsonDatas.hour.pop();
+    jsonDatas.minute.pop();
+}
+
+
 let convertDay = (day) =>{
     switch (day){
         case '0':

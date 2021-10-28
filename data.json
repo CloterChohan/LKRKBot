@@ -1,1 +1,37 @@
-{"black_tea":["https://i.imgur.com/4twRlEy.jpeg","https://media.discordapp.net/attachments/880810986234331219/898406396792569886/unknown.png?width=716&height=497","https://img.jakpost.net/c/2017/10/18/2017_10_18_34264_1508314397._large.jpg"],"green_tea":["https://i.imgur.com/AecK8x1.jpeg","https://static.republika.co.id/uploads/images/inpicture_slide/green-tea-ilustrasi-_150430000822-817.jpg"],"schedule":{"text":[],"roleId":[],"date":[],"day":[],"month":[],"hour":[],"minute":[]}}
+{
+    "black_tea": [
+        "https://i.imgur.com/4twRlEy.jpeg",
+        "https://media.discordapp.net/attachments/880810986234331219/898406396792569886/unknown.png?width=716&height=497",
+        "https://img.jakpost.net/c/2017/10/18/2017_10_18_34264_1508314397._large.jpg"
+    ],
+    "green_tea": [
+        "https://i.imgur.com/AecK8x1.jpeg",
+        "https://static.republika.co.id/uploads/images/inpicture_slide/green-tea-ilustrasi-_150430000822-817.jpg"
+    ],
+    "schedule": {
+        "index": [
+            "Index 0"
+        ],
+        "text": [
+            "Nanti jam 7 kita rapat lagi ya!! Yang g bisa tolong kasih tau dari sekarang di <#880810986234331219>!!"
+        ],
+        "roleId": [
+            "880810986234331216"
+        ],
+        "date": [
+            "*"
+        ],
+        "day": [
+            "5"
+        ],
+        "month": [
+            "*"
+        ],
+        "hour": [
+            "12"
+        ],
+        "minute": [
+            "0"
+        ]
+    }
+}

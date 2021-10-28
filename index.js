@@ -17,7 +17,7 @@ client.commands = new Collection();
 const commandFiles = fs.readdirSync('./slashCommands').filter(file => file.endsWith('.js'));
 
 //Scheduler
-const cron = require('node-cron');
+const schedule = require('node-schedule');
 
 for (const file of commandFiles) {
 	const command = require(`./slashCommands/${file}`);
@@ -37,14 +37,14 @@ bot.on('ready', async() => {
     bot.user.setActivity("with my master UwU", {type: "COMPETING"});
     deployCommand();
     let data = JSON.parse(fs.readFileSync('./data.json'));
-    for(let i = 0 ; i < data.schedule.date.length; i++){
-        let task = cron.schedule(`${data.schedule.minute[i]} ${data.schedule.hour[i]} ${data.schedule.date[i]} ${data.schedule.month[i]} ${data.schedule.day[i]}`, () =>  {
-            bot.channels.cache.get("880814120688054312").send(`@${data.schedule.roleId[i].name}, ` + data.schedule.text[i]);
-            }, {
-            scheduled: true,
-            timezone: "Asia/Jakarta"
+    data = data.schedule;
+    if(data.index.length > 0){
+        for(let i = 0 ; i < data.index.length; i++){
+            let task = schedule.scheduleJob(data.index[i] ,`${data.minute[i]} ${data.hour[i]} ${data.date[i]} ${data.month[i]} ${data.day[i]}`, function() {
+                bot.channels.cache.get("880814120688054312").send(`Hey! <@&${data.roleId[i]}> ` + data.text);
             });
-        task.start();
+        }
+        console.log("Data Loaded Succesfully!");
     }
 });
 
