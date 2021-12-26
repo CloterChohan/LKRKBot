@@ -23,9 +23,18 @@
 8. Create new file with name "auth.json" with this inside
 ```json
 {
-	"token": ""
+    "token": "",
+    "clientId" : "",
+    "guildId" : "",
+    "announcementChId" : ""
 }
 ```
-Make sure to write the bot-token inside the "", example: ``"token": "0000000000000000000000000000000"``.
+Make sure to write the bot-token inside the "", example: 
+```json
+    "token": "0000000000000000000000000000000",
+    "clientId" : "xxxxxxxxxxxxxxxxx",
+    "guildId" : "xxxxxxxxxxxxxxxxxxxx",
+    "announcementChId" : "xxxxxxxxxxxxxxxxx"
+```.
 
 !To get the token, visit https://discord.com/developers and choose the bot you want to create, and then go to bot > copy token
