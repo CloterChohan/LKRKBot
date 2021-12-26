@@ -35,6 +35,6 @@ Make sure to write the bot-token inside the "", example:
     "clientId" : "xxxxxxxxxxxxxxxxx",
     "guildId" : "xxxxxxxxxxxxxxxxxxxx",
     "announcementChId" : "xxxxxxxxxxxxxxxxx"
-```.
+```
 
 !To get the token, visit https://discord.com/developers and choose the bot you want to create, and then go to bot > copy token
