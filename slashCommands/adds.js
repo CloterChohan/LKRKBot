@@ -19,14 +19,14 @@ module.exports = {
             let blackTeaInput = interaction.options.getString('black_tea');
             let data = JSON.parse(fs.readFileSync('./data.json'));
             data.black_tea.push(blackTeaInput);
-            fs.writeFileSync('./data.json', JSON.stringify(data), "utf-8");
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), "utf-8");
             interaction.reply("Succesfully put Images");
         }
         if(interaction.options.getString('green_tea') !== null){
             let greenTeaInput = interaction.options.getString('green_tea');
             let data = JSON.parse(fs.readFileSync('./data.json'));
             data.green_tea.push(greenTeaInput);
-            fs.writeFileSync('./data.json', JSON.stringify(data), "utf-8");
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), "utf-8");
             interaction.reply("Succesfully put Images");
         }
         if (interaction.options.getString('green_tea') === null && interaction.options.getString('black_tea') === null){

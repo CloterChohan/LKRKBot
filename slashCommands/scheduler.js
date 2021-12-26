@@ -1,11 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Client, Intents, MessageEmbed } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const wait = require('util').promisify(setTimeout);
-const jsonFile = require('../data.json');
 const fs = require('fs');
 const schedule = require('node-schedule');
-const auth = require('../auth.json');
 
 module.exports = {
     data: new SlashCommandBuilder()

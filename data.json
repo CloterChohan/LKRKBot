@@ -33,5 +33,31 @@
         "minute": [
             "0"
         ]
+    },
+    "ideas": {
+        "id": [
+            "906084214896730112",
+            "908692973720580156",
+            "908695616161452043",
+            "910143018714152971",
+            "910143183768412210",
+            "910143296679071744"
+        ],
+        "index": [
+            "Idea#1",
+            "Idea#2",
+            "Idea#3",
+            "Idea#4",
+            "Idea#5",
+            "Idea#6"
+        ],
+        "text": [
+            "an enemy system where it randomly spawns e.g. whrn player is exploring in world or dungeon a random enemy (powerful, yet rewarding spawns) the enemy doesnt spawn in every dungeon but rather to make the player either afraid of it or else.",
+            "Player bisa milih weapon apa yang mau dia level up, jadi dari awal semua sama aja, tapi OP atau kgknya bisa di pilih player mana yang mau dibuat OP sama dia",
+            "``` a game mechanic triggers on some peak events e.g. You and your team crying in pain and begging for ur help. But the child is a fanatical devotee that has explosives strapped on him. You are only given 2 choices: (Option A: You helped the boy and take care of his wounds but there is a chance that you might cause a major disaster.) (Option B: You and your team let the boy bleed to death. He will die and you are responsible for the child's death and the memory will haunt you, but you will prevent bombings and major destruction.) . \nYour team keep telling you to let the boy die pressuring you to do so. (Event reinforced with shepard tone usage). A 3rd option will appear secretly if you take an item or do something before this event e.g.: on your way before you take a random scissors you found on the road. Thus a 3rd option will appear where you can cut the wires and heal the boy. This event will have an impact (no shift in overall storyline).```",
+            "```Resource scarcity:The earlies stages of story enables the player to take more resources to prepare for the 3rd choices mechanics (player feels he cansave everyone). But as the story progresses, the land becomes more corrupted because of the monsters. This will force the player to save resources for only choices that really impacts. Making the player cannot save anyone (deepens the story and dark feeling).```",
+            "Trauma mechanics improvement:Trauma now effects player stats according to which choices the player made.",
+            "Five stages of grief:the concept will be implemented to the story to give purpose for the trauma mechanic"
+        ]
     }
 }
